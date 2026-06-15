@@ -1,0 +1,36 @@
+# Python cache
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# Virtual environment
+.venv/
+venv/
+env/
+
+# Secrets
+.env
+.streamlit/secrets.toml
+
+# Runtime data
+data/uploads/*
+data/chroma_db/*
+data/outputs/*
+
+# Keep runtime folder structure
+!data/uploads/.gitkeep
+!data/chroma_db/.gitkeep
+!data/outputs/.gitkeep
+
+# OS/editor
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+# Backups/temp scripts
+app_backup_before_ui_cleanup.py
+*_backup*.py
+check_project.py

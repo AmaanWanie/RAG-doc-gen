@@ -1,0 +1,30 @@
+﻿{
+  "template_name": "Resume Profile Summary",
+  "base_prompt": "Write in a professional, polished, concise tone. Use only the provided context. Do not invent facts. Make the content suitable for a portfolio, LinkedIn summary, or professional profile.",
+  "sections": [
+    {
+      "title": "Professional Summary",
+      "instruction": "Summarize the person's background, technical direction, and career focus.",
+      "subsections": []
+    },
+    {
+      "title": "Technical Experience",
+      "instruction": "Describe the professional and research experience mentioned in the resume.",
+      "subsections": [
+        {
+          "title": "Industry Experience",
+          "instruction": "Summarize internship or company experience."
+        },
+        {
+          "title": "Research Experience",
+          "instruction": "Summarize research internship experience."
+        }
+      ]
+    },
+    {
+      "title": "Projects and Skills",
+      "instruction": "Summarize key technical skills, frameworks, tools, and projects.",
+      "subsections": []
+    }
+  ]
+}

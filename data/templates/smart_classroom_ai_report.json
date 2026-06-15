@@ -1,0 +1,41 @@
+{
+  "template_name": "Smart Classroom AI Report",
+  "base_prompt": "Write in a professional technical report style. Use only the retrieved context. Do not invent facts. Keep the output clear, structured, and suitable for a proof-of-concept project report.",
+  "sections": [
+    {
+      "title": "Introduction",
+      "instruction": "Introduce the topic and explain its background.",
+      "subsections": []
+    },
+    {
+      "title": "Executive Summary",
+      "instruction": "Summarize the purpose and value of the Smart Classroom AI document generator.",
+      "subsections": []
+    },
+    {
+      "title": "System Architecture",
+      "instruction": "Explain the main components and how they work together.",
+      "subsections": [
+        {
+          "title": "Core Modules",
+          "instruction": "Describe ingestion, retrieval, prompt building, generation, and output rendering."
+        }
+      ]
+    },
+    {
+      "title": "Retrieval and Citation Strategy",
+      "instruction": "Explain how retrieved chunks are used and how citations support traceability.",
+      "subsections": []
+    },
+    {
+      "title": "Evaluation Metrics",
+      "instruction": "List and explain the evaluation metrics used to judge the system.",
+      "subsections": []
+    },
+    {
+      "title": "Risks and Future Scope",
+      "instruction": "Discuss risks, limitations, deployment concerns, and possible future improvements.",
+      "subsections": []
+    }
+  ]
+}

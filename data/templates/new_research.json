@@ -1,0 +1,26 @@
+{
+  "template_name": "new research",
+  "base_prompt": "Write in a clear, professional academic tone. Use only the provided context. Do not invent facts. Keep the output structured and concise.",
+  "sections": [
+    {
+      "title": "Introduction",
+      "instruction": "Introduce the topic and explain its background.",
+      "subsections": []
+    },
+    {
+      "title": "Methodology",
+      "instruction": "Explain the method or workflow from the documents.",
+      "subsections": [
+        {
+          "title": "Data Sources",
+          "instruction": "Describe the source documents or datasets if mentioned."
+        }
+      ]
+    },
+    {
+      "title": "Conclusion",
+      "instruction": "Summarize the key points professionally.",
+      "subsections": []
+    }
+  ]
+}
