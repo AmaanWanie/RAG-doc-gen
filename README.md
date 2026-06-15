@@ -1,4 +1,4 @@
-# RAG Document Generator ? Proof of Concept
+# RAG Document Generator — Proof of Concept
 
 A standalone Retrieval-Augmented Generation (RAG) document generation application built with Streamlit, ChromaDB, sentence-transformers, and either Ollama or OpenAI.
 
@@ -241,41 +241,41 @@ src/output/citation_formatter.py
 
 ```text
 rag_document_generator/
-??? app.py
-??? README.md
-??? pyproject.toml
-??? uv.lock
-??? .env.example
-??? .streamlit/
-?   ??? config.toml
-??? data/
-?   ??? uploads/
-?   ??? chroma_db/
-?   ??? templates/
-?   ??? outputs/
-??? sample_templates/
-??? src/
-?   ??? config.py
-?   ??? models.py
-?   ??? ingestion/
-?   ?   ??? document_loader.py
-?   ?   ??? text_splitter.py
-?   ?   ??? ingestion_pipeline.py
-?   ??? vectorstore/
-?   ?   ??? embeddings.py
-?   ?   ??? chroma_store.py
-?   ??? retrieval/
-?   ?   ??? retriever.py
-?   ??? templates/
-?   ?   ??? template_manager.py
-?   ??? generation/
-?   ?   ??? prompt_builder.py
-?   ?   ??? llm_client.py
-?   ?   ??? generation_pipeline.py
-?   ??? output/
-?       ??? citation_formatter.py
-?       ??? markdown_renderer.py
-??? tests/
+├── app.py
+├── README.md
+├── pyproject.toml
+├── uv.lock
+├── .env.example
+├── .streamlit/
+│   └── config.toml
+├── data/
+│   ├── uploads/
+│   ├── chroma_db/
+│   ├── templates/
+│   └── outputs/
+├── sample_templates/
+├── src/
+│   ├── config.py
+│   ├── models.py
+│   ├── ingestion/
+│   │   ├── document_loader.py
+│   │   ├── text_splitter.py
+│   │   └── ingestion_pipeline.py
+│   ├── vectorstore/
+│   │   ├── embeddings.py
+│   │   └── chroma_store.py
+│   ├── retrieval/
+│   │   └── retriever.py
+│   ├── templates/
+│   │   └── template_manager.py
+│   ├── generation/
+│   │   ├── prompt_builder.py
+│   │   ├── llm_client.py
+│   │   └── generation_pipeline.py
+│   └── output/
+│       ├── citation_formatter.py
+│       └── markdown_renderer.py
+└── tests/
 ```
 
 ---
@@ -409,7 +409,7 @@ http://localhost:8501
 
 ## 7. How to Use the Application
 
-### Step 1 ? Upload, Extract, and Chunk Source Documents
+### Step 1 — Upload, Extract, and Chunk Source Documents
 
 1. Upload one or more PDF, TXT, or Markdown files.
 2. Choose chunk size and chunk overlap.
@@ -437,7 +437,7 @@ These open review dialogs without cluttering the main page.
 
 ---
 
-### Step 2 ? Build Retrieval Index
+### Step 2 — Build Retrieval Index
 
 Click:
 
@@ -466,7 +466,7 @@ deployment plan
 
 ---
 
-### Step 3 ? Configure Prompt Template
+### Step 3 — Configure Prompt Template
 
 Use the template editor to define:
 
@@ -506,7 +506,7 @@ The template can be saved and reloaded across sessions.
 
 ---
 
-### Step 4 ? Preview Final Prompt
+### Step 4 — Preview Final Prompt
 
 The prompt preview step shows exactly what will be sent to the LLM for a selected section.
 
@@ -522,7 +522,7 @@ This step is useful for debugging and verifying that the RAG context is correct.
 
 ---
 
-### Step 5 ? Generate One Section
+### Step 5 — Generate One Section
 
 Before generating a full document, test one section.
 
@@ -551,7 +551,7 @@ The output should include generated content and source citations.
 
 ---
 
-### Step 6 ? Generate Full Document
+### Step 6 — Generate Full Document
 
 After the single-section output looks correct, generate the complete document.
 
@@ -702,99 +702,7 @@ Run tests, if tests are present:
 uv run pytest
 ```
 
----
-
-## 12. Troubleshooting
-
-### 12.1 Streamlit shows torchvision or transformers watcher errors
-
-This app does not require torchvision. If Streamlit scans optional transformers vision modules, disable the file watcher.
-
-The repository includes:
-
-```text
-.streamlit/config.toml
-```
-
-Expected content:
-
-```toml
-[server]
-fileWatcherType = "none"
-runOnSave = false
-```
-
-You can also run:
-
-```powershell
-uv run streamlit run app.py --server.fileWatcherType none --server.runOnSave false
-```
-
-If TOML parsing fails on Windows, rewrite the file without BOM:
-
-```powershell
-uv run python -c "from pathlib import Path; Path('.streamlit/config.toml').write_bytes(b'[server]\nfileWatcherType = \"none\"\nrunOnSave = false\n')"
-```
-
----
-
-### 12.2 Ollama connection fails
-
-Check that Ollama is running:
-
-```powershell
-ollama list
-```
-
-Start Ollama if needed:
-
-```powershell
-ollama serve
-```
-
-Check the `.env` values:
-
-```env
-OLLAMA_BASE_URL=http://localhost:11434
-OLLAMA_MODEL=llama3.2:latest
-```
-
----
-
-### 12.3 Template loading fails with UTF-8 BOM error
-
-Template loading supports UTF-8 with BOM through `utf-8-sig`. If a template still fails, resave it as plain UTF-8 JSON.
-
----
-
-### 12.4 Retrieval returns irrelevant chunks
-
-Try:
-
-```text
-Top-K: 2
-Auto distance filter: enabled
-```
-
-For larger documents, increase Top-K to 3?5.
-
-Also make section titles and instructions more specific.
-
----
-
-### 12.5 Generated output repeats headings
-
-The generation pipeline removes duplicate model-generated section headings and forces section headings to use Markdown level 2:
-
-```markdown
-## Section Title
-```
-
-If a model still produces unusual formatting, regenerate with a stricter base prompt.
-
----
-
-## 13. Proof-of-Concept Scope
+## 12. Proof-of-Concept Scope
 
 Included in this POC:
 
@@ -821,27 +729,7 @@ Not included:
 
 ---
 
-## 14. Reviewer Checklist
-
-A reviewer can validate the POC using the following checklist:
-
-- Upload a PDF or text file.
-- Extract and chunk the document.
-- Build the ChromaDB retrieval index.
-- Define a base prompt.
-- Add at least three sections.
-- Add at least one subsection.
-- Add at least one section-specific instruction.
-- Save the template.
-- Reload the template in the same or a fresh session.
-- Generate one section.
-- Generate the full document.
-- Confirm that each generated section displays source citations.
-- Download or view the generated Markdown output.
-
----
-
-## 15. Example End-to-End Workflow
+## 13. Example End-to-End Workflow
 
 Recommended quick test:
 
@@ -861,30 +749,6 @@ Recommended quick test:
 
 ---
 
-## 16. Notes on Design Choices
-
-### Why ChromaDB?
-
-ChromaDB is local, simple to run, and appropriate for a standalone proof of concept. It avoids external vector database setup.
-
-### Why sentence-transformers?
-
-sentence-transformers provides local embeddings without requiring a paid API. This supports offline or low-cost testing.
-
-### Why Ollama?
-
-Ollama allows local LLM generation and keeps the POC usable without external API keys.
-
-### Why Markdown output?
-
-Markdown is lightweight, easy to inspect, and sufficient for the POC scope.
-
-### Why programmatic citations?
-
-The application generates citations from retrieved chunks instead of relying on the LLM to invent or format citations. This improves traceability and reduces fake references.
-
----
-
-## 17. License and Ownership
+## 14. License and Ownership
 
 This repository is a proof-of-concept implementation for demonstrating a RAG-based document generation workflow.
