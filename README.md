@@ -293,6 +293,15 @@ Install the following before running the project:
 
 This project was developed with Python 3.11.
 
+to install Ollama in Windows using powershell
+```powershell
+winget install -e --id Ollama.Ollama
+```
+to install UV package manager in using powershell
+```powershell
+winget install -e --id astral-sh.uv
+````
+
 Check Python:
 
 ```powershell
@@ -662,47 +671,7 @@ The repository keeps the folder structure using `.gitkeep` files.
 
 The real `.env` file is ignored because it may contain secrets. Only `.env.example` is committed.
 
----
-
-## 11. Development and Validation Commands
-
-Check Python syntax:
-
-```powershell
-uv run python -m compileall src app.py
-```
-
-Check imports:
-
-```powershell
-uv run python -c "import app; print('App import OK')"
-```
-
-Run Ruff:
-
-```powershell
-uv run ruff check .
-```
-
-Run Black check:
-
-```powershell
-uv run black --check .
-```
-
-Apply Black formatting:
-
-```powershell
-uv run black .
-```
-
-Run tests, if tests are present:
-
-```powershell
-uv run pytest
-```
-
-## 12. Proof-of-Concept Scope
+## 11. Proof-of-Concept Scope
 
 Included in this POC:
 
@@ -729,7 +698,7 @@ Not included:
 
 ---
 
-## 13. Example End-to-End Workflow
+## 12. Example End-to-End Workflow
 
 Recommended quick test:
 
@@ -749,6 +718,6 @@ Recommended quick test:
 
 ---
 
-## 14. License and Ownership
+## 13. License and Ownership
 
 This repository is a proof-of-concept implementation for demonstrating a RAG-based document generation workflow.
