@@ -288,12 +288,30 @@ def render_chunk_review_dialog() -> None:
                 )
 
 
-@st.dialog("Test retrieval")
+@st.dialog("Find matching source chunks")
 def render_retrieval_test_dialog() -> None:
     """Show retrieval testing controls in a dialog."""
+    st.info(
+        "This tool checks which parts of the uploaded documents match your search topic. "
+        "These matching chunks are the same kind of source material the AI uses when generating sections."
+    )
+
     if not st.session_state.get("vector_index_ready", False):
-        st.info("Build the vector index first before testing retrieval.")
+        st.warning("Build the search index first before finding matching source chunks.")
         return
+
+    st.markdown(
+        """
+        **What to try**
+
+        Search for a topic that exists in your uploaded document, for example:
+
+        - `system architecture`
+        - `evaluation metrics`
+        - `privacy risks`
+        - `deployment plan`
+        """
+    )
 
     query = st.text_input(
         "Search query",
@@ -328,7 +346,7 @@ def render_retrieval_test_dialog() -> None:
 
     distance_filter = "auto" if use_auto_distance else manual_distance
 
-    if st.button("Retrieve Relevant Chunks", type="primary"):
+    if st.button("Find Matching Chunks", type="primary"):
         try:
             with st.spinner("Retrieving relevant chunks..."):
                 retriever = Retriever(
@@ -349,7 +367,7 @@ def render_retrieval_test_dialog() -> None:
     retrieved_chunks = st.session_state.get("dialog_retrieval_results", [])
 
     if retrieved_chunks:
-        st.success(f"Retrieved {len(retrieved_chunks)} chunk(s).")
+        st.success(f"Found {len(retrieved_chunks)} matching source chunk(s).")
 
         for chunk in retrieved_chunks:
             title = (
@@ -466,7 +484,22 @@ def render_document_ingestion_step() -> None:
 
 def render_vector_index_step() -> None:
     """Render vector indexing and retrieval test button."""
-    st.header("Step 5 — Build retrieval index")
+    st.header("Step 5 — Build search index")
+
+    st.caption(
+        "This step converts your document chunks into searchable vectors and stores them in ChromaDB. "
+        "After this, the app can find the most relevant source chunks for each section before asking the AI to write."
+    )
+
+    with st.expander("What should I expect here?", expanded=False):
+        st.markdown(
+            """
+            - The app will embed every chunk created in Step 1.
+            - The chunks are stored in the local ChromaDB folder.
+            - Once the index is ready, you can search your documents by topic.
+            - During generation, the AI receives only the most relevant retrieved chunks as context.
+            """
+        )
 
     all_chunks = flatten_chunks_from_session()
 
@@ -474,10 +507,10 @@ def render_vector_index_step() -> None:
         st.info("Upload and process documents first. Chunks will appear here after Step 1.")
         return
 
-    st.write(f"Ready to index `{len(all_chunks)}` chunks into ChromaDB.")
+    st.write(f"Ready to make `{len(all_chunks)}` chunks searchable.")
     st.write(f"ChromaDB directory: `{CHROMA_DB_DIR}`")
 
-    if st.button("Create / Reset Vector Index", type="primary"):
+    if st.button("Build Search Index", type="primary"):
         try:
             with st.spinner(
                 "Loading embedding model and indexing chunks. First run may take longer..."
@@ -497,7 +530,7 @@ def render_vector_index_step() -> None:
 
             st.session_state.vector_index_ready = True
             st.success(
-                f"Vector index created successfully. Stored {inserted_count} chunk(s)."
+                f"Search index created successfully. Stored {inserted_count} searchable chunk(s)."
             )
 
         except Exception as exc:
@@ -505,9 +538,9 @@ def render_vector_index_step() -> None:
             st.error(f"Vector indexing failed: {exc}")
 
     if st.session_state.get("vector_index_ready", False):
-        st.success("Retrieval index is ready.")
+        st.success("Search index is ready. The app can now find relevant source chunks.")
 
-        if st.button("Test Retrieval"):
+        if st.button("Find Matching Source Chunks"):
             render_retrieval_test_dialog()
 
 
