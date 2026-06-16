@@ -371,7 +371,7 @@ LLM_PROVIDER=ollama
 OPENAI_MODEL=gpt-4o-mini
 
 OLLAMA_BASE_URL=http://localhost:11434
-OLLAMA_MODEL=llama3.2:latest
+OLLAMA_MODEL=llama3.2:3b
 
 CHROMA_DB_DIR=data/chroma_db
 UPLOAD_DIR=data/uploads
@@ -388,7 +388,7 @@ For local-only usage, an OpenAI key is not required if `LLM_PROVIDER=ollama`.
 Install Ollama separately, then pull a local model:
 
 ```powershell
-ollama pull llama3.2
+ollama pull llama3.2:3b
 ```
 
 Check that Ollama is available:

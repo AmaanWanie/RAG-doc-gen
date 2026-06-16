@@ -116,9 +116,14 @@ class ChromaVectorStore:
         Returns:
             List of retrieved chunks.
         """
+        n_results = min(top_k, self.count())
+
+        if n_results <= 0:
+            return []
+
         results = self.collection.query(
             query_embeddings=[query_embedding],
-            n_results=top_k,
+            n_results=n_results,
             include=["documents", "metadatas", "distances"],
         )
 

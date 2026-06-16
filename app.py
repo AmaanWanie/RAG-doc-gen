@@ -676,34 +676,39 @@ def render_template_editor() -> None:
     """Render the prompt template editor UI."""
     initialize_template_state()
 
-    st.header("Step 7 — Configure prompt template")
+    st.header("Step 7 — Configure document template")
+
+    st.caption(
+        "Define the structure of the final document. The base prompt applies to every section, "
+        "while section instructions and subsections guide individual parts of the generated report."
+    )
 
     editor_version = st.session_state.get("template_editor_version", 0)
 
-    st.subheader("Load Existing Template")
+    with st.expander("Load saved template", expanded=False):
 
-    template_files = list_template_files(TEMPLATE_DIR)
-    template_options = [str(path) for path in template_files]
+        template_files = list_template_files(TEMPLATE_DIR)
+        template_options = [str(path) for path in template_files]
 
-    if template_options:
-        selected_template_path = st.selectbox(
-            "Saved templates",
-            options=template_options,
-            format_func=lambda path: Path(path).name,
-            placeholder="Select a saved template",
-            key="selected_template_path",
-        )
+        if template_options:
+            selected_template_path = st.selectbox(
+                "Saved templates",
+                options=template_options,
+                format_func=lambda path: Path(path).name,
+                placeholder="Select a saved template",
+                key="selected_template_path",
+            )
 
-        if st.button("Load Selected Template"):
-            try:
-                template = load_template(selected_template_path)
-                load_template_into_state(template)
-                st.success(f"Loaded template: {template.template_name}")
-                st.rerun()
-            except Exception as exc:
-                st.error(f"Failed to load template: {exc}")
-    else:
-        st.info("No saved templates found yet. Create and save one below.")
+            if st.button("Load Selected Template"):
+                try:
+                    template = load_template(selected_template_path)
+                    load_template_into_state(template)
+                    st.success(f"Loaded template: {template.template_name}")
+                    st.rerun()
+                except Exception as exc:
+                    st.error(f"Failed to load template: {exc}")
+        else:
+            st.info("No saved templates found yet. Create and save one below.")
 
     st.divider()
 
@@ -733,7 +738,7 @@ def render_template_editor() -> None:
     for section_index, section in enumerate(st.session_state.template_sections):
         with st.expander(
             f"Section {section_index + 1}: {section.get('title') or 'Untitled'}",
-            expanded=True,
+            expanded=(section_index == 0),
         ):
             section["title"] = st.text_input(
                 "Section title",
@@ -817,11 +822,15 @@ def render_template_editor() -> None:
                 st.error(f"Template save failed: {exc}")
 
     with preview_col:
-        if st.button("Validate Template"):
+        if st.button("Check Template"):
             try:
                 template = build_template_from_state()
+                subsection_count = sum(
+                    len(section.subsections) for section in template.sections
+                )
                 st.success(
-                    f"Template valid: {len(template.sections)} section(s) configured."
+                    f"Template is ready: {len(template.sections)} section(s), "
+                    f"{subsection_count} subsection(s)."
                 )
             except Exception as exc:
                 st.error(f"Template validation failed: {exc}")
@@ -836,7 +845,7 @@ def render_template_editor() -> None:
 
 def render_prompt_preview() -> None:
     """Render a preview of the final prompt for one selected section."""
-    st.header("Step 8 — Preview final prompt")
+    st.subheader("Advanced prompt preview")
 
     try:
         template = build_template_from_state()
@@ -941,7 +950,7 @@ def render_prompt_preview() -> None:
 
 def render_single_section_generation() -> None:
     """Render UI for generating one selected section."""
-    st.header("Step 9 — Generate one section")
+    st.subheader("Test one section")
 
     try:
         template = build_template_from_state()
@@ -969,7 +978,7 @@ def render_single_section_generation() -> None:
     default_provider = LLM_PROVIDER if LLM_PROVIDER in provider_options else "ollama"
 
     selected_provider = st.selectbox(
-        "LLM provider",
+        "AI model provider",
         options=provider_options,
         index=provider_options.index(default_provider),
         key="generation_provider",
@@ -979,7 +988,7 @@ def render_single_section_generation() -> None:
 
     with col1:
         generation_top_k = st.slider(
-            "Top-K chunks for generation",
+            "Source chunks to use",
             min_value=1,
             max_value=10,
             value=2,
@@ -988,13 +997,13 @@ def render_single_section_generation() -> None:
 
     with col2:
         use_auto_distance_generation = st.checkbox(
-            "Use automatic distance filter for generation",
+            "Automatically filter weak source matches",
             value=True,
             key="generation_use_auto_distance",
         )
 
         generation_max_distance = st.slider(
-            "Manual maximum distance filter for generation",
+            "Manual source-match threshold",
             min_value=0.10,
             max_value=1.50,
             value=0.65,
@@ -1086,7 +1095,7 @@ def render_single_section_generation() -> None:
 
 def render_full_document_generation() -> None:
     """Render UI for generating the full document section by section."""
-    st.header("Step 10 — Generate full document")
+    st.subheader("Generate full document")
 
     try:
         template = build_template_from_state()
@@ -1102,7 +1111,7 @@ def render_full_document_generation() -> None:
     default_provider = LLM_PROVIDER if LLM_PROVIDER in provider_options else "ollama"
 
     selected_provider = st.selectbox(
-        "Full document LLM provider",
+        "AI model provider",
         options=provider_options,
         index=provider_options.index(default_provider),
         key="full_generation_provider",
@@ -1112,7 +1121,7 @@ def render_full_document_generation() -> None:
 
     with col1:
         full_top_k = st.slider(
-            "Top-K chunks per section",
+            "Source chunks per section",
             min_value=1,
             max_value=10,
             value=2,
@@ -1121,13 +1130,13 @@ def render_full_document_generation() -> None:
 
     with col2:
         use_auto_distance_full = st.checkbox(
-            "Use automatic distance filter per section",
+            "Automatically filter weak source matches",
             value=True,
             key="full_generation_use_auto_distance",
         )
 
         full_max_distance = st.slider(
-            "Manual maximum distance filter per section",
+            "Manual source-match threshold",
             min_value=0.10,
             max_value=1.50,
             value=0.65,
@@ -1237,6 +1246,33 @@ def render_full_document_generation() -> None:
                 )
 
 
+def render_generation_workspace() -> None:
+    """Render generation tools in a compact tabbed workspace."""
+    st.header("Step 8 — Generate document")
+
+    st.caption(
+        "Generate a single section first to verify retrieval quality, then generate the full Markdown document. "
+        "Prompt preview is available under Advanced for debugging."
+    )
+
+    test_tab, full_tab, prompt_tab = st.tabs(
+        [
+            "Test one section",
+            "Generate full document",
+            "Advanced prompt preview",
+        ]
+    )
+
+    with test_tab:
+        render_single_section_generation()
+
+    with full_tab:
+        render_full_document_generation()
+
+    with prompt_tab:
+        render_prompt_preview()
+
+
 def main() -> None:
     """Render the main Streamlit application."""
     ensure_directories()
@@ -1260,9 +1296,7 @@ def main() -> None:
     render_document_ingestion_step()
     render_vector_index_step()
     render_template_editor()
-    render_prompt_preview()
-    render_single_section_generation()
-    render_full_document_generation()
+    render_generation_workspace()
 
 
 if __name__ == "__main__":
