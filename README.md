@@ -297,10 +297,21 @@ to install Ollama in Windows using powershell
 ```powershell
 winget install -e --id Ollama.Ollama
 ```
+for MacOS/linux based:
+
+```bash
+curl -fsSL https://ollama.com/install.sh | sh
+```
+
 to install UV package manager in using powershell
 ```powershell
 winget install -e --id astral-sh.uv
-````
+```
+for MacOS/Linux:
+
+```bash
+curl -LsSf https://astral.sh/uv/install.sh | sh
+```
 
 Check Python:
 
